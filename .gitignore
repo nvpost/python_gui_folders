@@ -1,2 +1,5 @@
 .idea
 venv
+dist
+build
+build_file.spec
