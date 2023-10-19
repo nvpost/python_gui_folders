@@ -1,36 +1,14 @@
 from tkinter import *
-from tkinter.ttk import *
 
 import json
 data = json.load(open('Invest.json', 'r', encoding='utf-8'))
 
 window = Tk()
 window.title("Найти путь")
-window.geometry("800x800")
+window.geometry("400x600")
 
 
-
-
-# frame = Frame(
-#     window,
-#     padx=10,
-#     pady=10
-# )
-
-# frame.pack(expand=True)
-
-lb = Label(
-    window,
-    text="Нужно найти устройство и кликнуть - откроется папка"
-)
-lb.pack()
-
-
-iz = Entry(window)
-iz.pack()
-
-
-def go_to_folder(folders):
+def on_select(folders):
     print(folders)
 
 listbox = False
@@ -56,45 +34,66 @@ def drowProducts(data):
 
         if i['IZ']:
             folders = 'folders/' + i['DV'] + '/' + io + '/' + gp + '/' + pd + '/' + i['IZ']
-            product_name = i['IZ'].replace(' (IZ)', '')
-            listbox.insert(END, product_name)
 
+            # frame = Frame(
+            #     window,
+            #     padx=10,
+            #     pady=3
+            # )
+            # frame.pack(expand=True)
+            #
+            # lb = Label(
+            #     frame,
+            #     text=i['IZ']
+            # )
+            listbox.insert(END, i['IZ'])
+            # lb.grid(row=5, column=1)
+            #
+            # cal_btn = Button(
+            #     frame,
+            #     text="Открыть",
+            #     command=lambda: openFolder(folders),
+            #
+            # )
+            # cal_btn.grid(row=5, column=2)
     listbox.pack(fill=X, padx=5, pady=5)
-    listbox.bind('<<ListboxSelect>>', lambda _: go_to_folder(folders))
+    listbox.bind('<<ListboxSelect>>', lambda _: on_select(folders))
     scrollbar.config(command=listbox.yview)
+
+
+def openFolder(p):
+    print(p)
 
 
 def doNewData(p):
     global data
     nn=[]
-    if p == '':
-        drowProducts(data)
-        return
+
     for i in data:
         if i['IZ'] and p in i['IZ']:
             nn.append(i)
-            # print(i['IZ'])
+            print(i['IZ'])
+
     print (len(nn))
     drowProducts(nn)
 
 phrase = ""
 def keydown(e):
     global phrase
-    global iz
-    print('iz', iz.get())
-    print(e.keycode)
-
-    if e.keycode == 8:
-        # Удаление символа
-        phrase = phrase[:-1]
-    else:
-        phrase = phrase + e.char
+    phrase += e.char
     doNewData(phrase)
-    print('phrase', phrase)
+    print(phrase)
+
+
+
+
+
+
+iz = Entry(window)
 
 iz.bind("<KeyPress>", keydown)
 
-
+iz.pack()
 
 
 
