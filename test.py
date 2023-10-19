@@ -1,5 +1,7 @@
 from tkinter import *
-from tkinter.ttk import *
+import tkinter.messagebox as mb
+import os
+
 
 import json
 data = json.load(open('Invest.json', 'r', encoding='utf-8'))
@@ -8,30 +10,50 @@ window = Tk()
 window.title("Найти путь")
 window.geometry("800x800")
 
+phrase = ""
 
 
-
-# frame = Frame(
-#     window,
-#     padx=10,
-#     pady=10
-# )
-
-# frame.pack(expand=True)
-
-lb = Label(
-    window,
-    text="Нужно найти устройство и кликнуть - откроется папка"
+frame = Frame(
+    window
 )
-lb.pack()
+lb = Label(
+    frame,
+    font=('Roboto', 15),
+    text="Нужно найти устройство, кликнуть - откроется папка: "
+)
+lb.grid(row=5, column=2)
 
 
-iz = Entry(window)
-iz.pack()
+
+iz = Entry(frame)
+iz.grid(row=5, column=4)
+
+frame.config(width=100)
+frame.pack(anchor="nw", pady=10)
+
+show_akytec = False
+def print_selection():
+    global show_akytec
+    show_akytec = not show_akytec
+    print('print_selection', show_akytec)
+    doNewData(phrase)
+
+
+c1 = Checkbutton(window, text='Показывать Akytec', onvalue=1, offvalue=0, command=print_selection)
+c1.pack()
 
 
 def go_to_folder(folders):
     print(folders)
+    path = "J:/dev/python_projects"
+    path = os.path.realpath(path)
+    if os.path.isdir(path):
+        print('есть')
+        os.startfile(path)
+    else:
+        print('нет')
+        msg = "Нет такой папки, обратитесь к админу"
+        mb.showerror("Ошибка", msg)
 
 listbox = False
 scrollbar = False
@@ -63,27 +85,31 @@ def drowProducts(data):
     listbox.bind('<<ListboxSelect>>', lambda _: go_to_folder(folders))
     scrollbar.config(command=listbox.yview)
 
+def clear_data(i_iz):
+    if "поверка" in i_iz.lower() or "архив" in i_iz.lower():
+        return False
+    else:
+        return True
 
 def doNewData(p):
     global data
+    global show_akytec
+
     nn=[]
-    if p == '':
-        drowProducts(data)
-        return
     for i in data:
-        if i['IZ'] and p in i['IZ']:
-            nn.append(i)
+        if i['IZ'] and p in i['IZ'] and clear_data(i['IZ']):
+            if show_akytec:
+                nn.append(i)
+            else:
+                if 'Akytec' not in i['IZ']:
+                    nn.append(i)
             # print(i['IZ'])
-    print (len(nn))
+    print ('len nn', len(nn))
     drowProducts(nn)
 
-phrase = ""
+
 def keydown(e):
     global phrase
-    global iz
-    print('iz', iz.get())
-    print(e.keycode)
-
     if e.keycode == 8:
         # Удаление символа
         phrase = phrase[:-1]
@@ -95,12 +121,7 @@ def keydown(e):
 iz.bind("<KeyPress>", keydown)
 
 
-
-
-
 doNewData("")
-
-
 
 window.mainloop()
 
