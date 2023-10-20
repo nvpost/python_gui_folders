@@ -53,21 +53,33 @@ def go_to_folder(path):
         msg = "Нет такой папки, обратитесь к админу"
         mb.showerror("Ошибка", msg)
 
-listbox = False
-scrollbar = False
+# listbox = False
+# scrollbar = False
+frame =False
 def drowProducts(data):
 
-    global listbox
-    global scrollbar
-    if listbox:
-        listbox.destroy()
-    if scrollbar:
-        scrollbar.destroy()
+    # global listbox
+    # global scrollbar
+    global frame
+    # if listbox:
+    #     listbox.destroy()
+    # if scrollbar:
+    #     scrollbar.destroy()
+    if frame:
+        frame.destroy()
+
+    frame = Frame(
+        window,
+        highlightbackground="black",
+        highlightthickness=1,
+        # bg="white",
+    )
 
 
-    scrollbar = Scrollbar(window)
-    scrollbar.pack(side=RIGHT, fill=Y)
-    listbox = Listbox(window, yscrollcommand=scrollbar.set, height=100)
+    # scrollbar = Scrollbar(window)
+    # scrollbar.pack(side=RIGHT, fill=Y)
+    # listbox = Listbox(window, yscrollcommand=scrollbar.set, height=100)
+    idx = 1
     for i in data:
 
         io = i['IO'] if i['IO'] else ''
@@ -82,12 +94,53 @@ def drowProducts(data):
 
             path = local_path + i['DV'] + '/' + io + '/' + gp + '/' + pd + '/' + i['IZ']
             product_name = i['IZ'].replace(' (IZ)', '')
-            listbox.insert(END, product_name + ' - ' + explorer_path)
 
 
-    listbox.pack(fill=X, padx=5, pady=5)
-    listbox.bind('<<ListboxSelect>>', lambda _: go_to_folder(path))
-    scrollbar.config(command=listbox.yview)
+
+            lb = Label(
+                frame,
+                font=('Roboto', 12),
+                text=product_name,
+                # bg="white",
+                anchor="w",
+                width = 20,
+                justify="left",
+
+            )
+            bt = Button(
+                frame,
+                font=('Roboto', 12),
+                text="Перейти",
+                command=lambda: go_to_folder(path)
+            )
+
+            lb.grid(row=idx + 1, column=1, padx=(10, 10))
+            bt.grid(row=idx + 1, column=2, padx=(10, 10))
+
+            # lb.pack(0, fill='both', side='left', expand='True')
+
+            idx +=1
+            # listbox.insert(END, product_name + ' - ' + explorer_path)
+
+
+    # frame.pack()
+
+    # scrollbar.config(command=frame.yview)
+
+    frame.pack(fill='both', side='left', expand='True')
+
+
+    # scrollbar = Scrollbar(window, orient='vertical', command=lb.yview)
+    # scrollbar.grid(row=0, column=1, sticky=NS)
+
+
+    # sb.config(command= frame.yview)
+
+
+
+    # listbox.pack(fill=X, padx=5, pady=5)
+    # listbox.bind('<<ListboxSelect>>', lambda _: go_to_folder(path))
+    # scrollbar.config(command=listbox.yview)
 
 def clear_data(i_iz):
     if "поверка" in i_iz.lower() or "архив" in i_iz.lower():
