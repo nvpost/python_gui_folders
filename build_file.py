@@ -10,7 +10,7 @@ window.title("Найти путь")
 window.geometry("800x800")
 
 phrase = ""
-
+folders_dict = {}
 
 frame = Frame(
     window
@@ -41,9 +41,14 @@ c1 = Checkbutton(window, text='Показывать Akytec', onvalue=1, offvalue
 c1.pack()
 
 
-def go_to_folder(path):
-    print(path)
-    # path = "J:/dev/python_projects/11"
+def go_to_folder(evt):
+    global folders_dict
+    w = evt.widget
+    index = int(w.curselection()[0])
+    value = w.get(index)
+    print(value)
+    print('path', folders_dict[value])
+    # # path = "J:/dev/python_projects/11"
     path = os.path.realpath(path)
     if os.path.isdir(path):
         print('есть')
@@ -55,6 +60,8 @@ def go_to_folder(path):
 
 listbox = False
 scrollbar = False
+
+
 def drowProducts(data):
 
     global listbox
@@ -81,12 +88,15 @@ def drowProducts(data):
             explorer_path = i['DV'] + '/' + io + '/' + gp + '/' + pd + '/' + i['IZ']
 
             path = local_path + i['DV'] + '/' + io + '/' + gp + '/' + pd + '/' + i['IZ']
+
             product_name = i['IZ'].replace(' (IZ)', '')
-            listbox.insert(END, product_name + ' - ' + explorer_path)
+
+            folders_dict[product_name] = path
+            listbox.insert(END, product_name)
 
 
     listbox.pack(fill=X, padx=5, pady=5)
-    listbox.bind('<<ListboxSelect>>', lambda _: go_to_folder(path))
+    listbox.bind('<<ListboxSelect>>', go_to_folder)
     scrollbar.config(command=listbox.yview)
 
 def clear_data(i_iz):
