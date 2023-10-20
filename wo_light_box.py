@@ -124,7 +124,7 @@ def keydown(e):
 
 iz.bind("<KeyPress>", keydown)
 
-
+# *
 doNewData("")
 
 window.mainloop()
