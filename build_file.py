@@ -47,14 +47,15 @@ def go_to_folder(evt):
     index = int(w.curselection()[0])
     value = w.get(index)
     print(value)
-    print('path', folders_dict[value])
+    path = folders_dict[value]
+    print('path', path)
     # # path = "J:/dev/python_projects/11"
     path = os.path.realpath(path)
     if os.path.isdir(path):
-        print('есть')
+        # print('есть')
         os.startfile(path)
     else:
-        print('нет')
+        # print('нет')
         msg = "Нет такой папки, обратитесь к админу"
         mb.showerror("Ошибка", msg)
 
@@ -118,7 +119,7 @@ def doNewData(p):
                 if 'Akytec' not in i['IZ']:
                     nn.append(i)
             # print(i['IZ'])
-    print ('len nn', len(nn))
+    # print ('len nn', len(nn))
     drowProducts(nn)
 
 
